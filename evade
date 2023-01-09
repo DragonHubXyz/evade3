@@ -1,0 +1,494 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonHubXyz/DragonHub/main/mencury"))()
+local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonHubXyz/DragonHub/main/mencury"))()
+local GUI = Mercury:Create{
+    Name = "Dragon Hub",
+    Size = UDim2.fromOffset(600, 400),
+    Theme = Mercury.Themes.Dark,
+    Link = "https://github.com/deeeity/mercury-lib"
+}
+
+--functions and shit
+getgenv().money = true
+getgenv().revivedie = true
+getgenv().autowistle = true
+getgenv().autochat = true
+getgenv().AutoDrink = true
+getgenv().NoCameraShake = true
+getgenv().Settings = {
+    moneyfarm = false,
+    afkfarm = false,
+    NoCameraShake = false,
+    Speed = 1450,
+    Jump = 3,
+    reviveTime = 3,
+}
+
+local FindAI = function()
+    for _,v in pairs(WorkspacePlayers:GetChildren()) do
+        if not Players:FindFirstChild(v.Name) then
+            return v
+        end
+    end
+end
+
+local GetDownedPlr = function()
+    for i,v in pairs(WorkspacePlayers:GetChildren()) do
+        if v:GetAttribute("Downed") then
+            return v
+        end
+    end
+end
+
+local revive = function()
+    local downedplr = GetDownedPlr()
+    if downedplr ~= nil and downedplr:FindFirstChild('HumanoidRootPart') then
+        task.spawn(function()
+            while task.wait() do
+                if localplayer.Character then
+                    workspace.Game.Settings:SetAttribute("ReviveTime", 2.2)
+                    localplayer.Character:FindFirstChild('HumanoidRootPart').CFrame = CFrame.new(downedplr:FindFirstChild('HumanoidRootPart').Position.X, downedplr:FindFirstChild('HumanoidRootPart').Position.Y + 3, downedplr:FindFirstChild('HumanoidRootPart').Position.Z)
+                    task.wait()
+                    game:GetService("ReplicatedStorage").Events.Revive.RevivePlayer:FireServer(tostring(downedplr), false)
+                    task.wait(4.5)
+                    game:GetService("ReplicatedStorage").Events.Revive.RevivePlayer:FireServer(tostring(downedplr), true)
+                    game:GetService("ReplicatedStorage").Events.Revive.RevivePlayer:FireServer(tostring(downedplr), true)
+                    game:GetService("ReplicatedStorage").Events.Revive.RevivePlayer:FireServer(tostring(downedplr), true)
+                    break
+                end
+            end
+        end)
+    end
+end
+
+task.spawn(function()
+    while task.wait() do
+        if Settings.AutoRespawn then
+             if localplayer.Character and localplayer.Character:GetAttribute("Downed") then
+                game:GetService("ReplicatedStorage").Events.Respawn:FireServer()
+             end
+        end
+
+        if Settings.NoCameraShake then
+            localplayer.PlayerScripts.CameraShake.Value = CFrame.new(0,0,0) * CFrame.new(0,0,0)
+        end
+        if Settings.moneyfarm then
+            if localplayer.Character and localplayer.Character:GetAttribute("Downed") then
+                game:GetService("ReplicatedStorage").Events.Respawn:FireServer()
+                task.wait(3)
+            else
+                revive()
+                task.wait(1)
+            end
+        end
+        if Settings.moneyfarm == false and Settings.afkfarm and localplayer.Character:FindFirstChild('HumanoidRootPart') ~= nil then
+            localplayer.Character:FindFirstChild('HumanoidRootPart').CFrame = CFrame.new(6007, 7005, 8005)
+        end
+    end
+end)
+
+function camerashake()
+    while NoCameraShake == true do task.wait()
+        localplayer.PlayerScripts.CameraShake.Value = CFrame.new(0,0,0) * CFrame.new(0,0,0)
+    end
+end
+
+function autodrink()
+	while AutoDrink == true do
+		local ohString1 = "Cola"
+		game:GetService("ReplicatedStorage").Events.UseUsable:FireServer(ohString1)
+		wait(6)
+	end
+end
+
+function SpamChat()
+    while autochat == true do
+        local ohString1 = "Dragon Hub #1"
+        local ohString2 = "All"
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(ohString1, ohString2)
+        wait(1)
+    end
+end
+
+function autowistlefunction()
+    while autowistle == true do
+        local ohString1 = "Whistle"
+        local ohBoolean2 = true
+        game:GetService("Players").LocalPlayer.PlayerScripts.Events.KeybindUsed:Fire(ohString1, ohBoolean2)
+        game:GetService("ReplicatedStorage").Events.Whistle:FireServer()
+        wait(5)
+    end
+end
+
+function god()
+    while revivedie == true do
+        game:GetService("ReplicatedStorage").Events.Respawn:FireServer()
+        wait()
+    end
+end
+            
+function dofullbright()
+    Light.Ambient = Color3.new(1, 1, 1)
+    Light.ColorShift_Bottom = Color3.new(1, 1, 1)
+    Light.ColorShift_Top = Color3.new(1, 1, 1)
+    game.Lighting.FogEnd = 100000
+    game.Lighting.FogStart = 0
+    game.Lighting.ClockTime = 14
+    game.Lighting.Brightness = 2
+    game.Lighting.GlobalShadows = false
+end
+
+function freemoney()
+    while money == true do
+        local ohString1 = "Free money <font color=\"rgb(100,255,100)\">($99999)</font>"
+        game:GetService("Players").LocalPlayer.PlayerGui.HUD.Messages.Use:Fire(ohString1)
+        wait(5)
+    end
+end
+--tabs
+
+MainTab = GUI:Tab{
+	Name = "Main",
+	Icon = "rbxassetid://12070125976"
+}
+MiscTab = GUI:Tab{
+	Name = "Extra Script",
+	Icon = "rbxassetid://12070255586"
+}
+WorldTab = GUI:Tab{
+	Name = "World",
+	Icon = "rbxassetid://12070282201"
+}
+TeleportTab = GUI:Tab{
+	Name = "Teleport",
+	Icon = "rbxassetid://12070320485"
+}
+
+FunTab = GUI:Tab{
+	Name = "Fun",
+	Icon = "rbxassetid://12070255586"
+}
+
+
+
+
+
+---Toggle
+MainTab:Toggle{
+	Name = "Money Farm",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+        Settings.moneyfarm = Value
+    end
+}
+
+
+--sliders
+
+local TargetWalkspeed
+MainTab:Slider{
+	Name = "Walk Speed",
+	Default = 15,
+	Min = 15,
+	Max = 500,
+	Callback = function(Value)
+		TargetWalkspeed = Value
+	end
+}
+
+MainTab:Slider{
+	Name = "Hip Height",
+	Default = 15,
+	Min = 15,
+	Max = 150,
+	Callback = function(HipValue)
+		game.Players.LocalPlayer.Character.Humanoid.HipHeight = HipValue
+	end
+}
+
+MainTab:Slider{
+	Name = "Fov",
+	Default = 1,
+	Min = 1,
+	Max = 500,
+	Callback = function(Fov)
+		local ohString1 = "FieldOfView"
+        local ohNumber2 = Fov
+        game:GetService("ReplicatedStorage").Events.UpdateSetting:FireServer(ohString1, ohNumber2)
+	end
+}
+
+MainTab:Slider{
+	Name = "Jump Power",
+	Default = 50,
+	Min = 0,
+	Max = 200,
+	Callback = function(Value)
+		Settings.Jump = Value
+	end
+}
+
+MiscTab:Slider{
+	Name = "Day & Night",
+	Default = 14,
+	Min = 0,
+	Max = 24,
+	Callback = function(Time)
+		game.Lighting.ClockTime = Time
+	end
+}
+
+
+--toggles
+
+MainTab:Toggle{
+	Name = "No Camera Shake",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		NoCameraShake = Value
+        camerashake()
+	end
+}
+
+MainTab:Toggle{
+	Name = "Auto Drink Cola",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		AutoDrink = Value
+		autodrink()
+	end
+}
+
+MainTab:Toggle{
+	Name = "Spam Chat",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		autochat = Value
+        SpamChat()
+	end
+}
+
+FunTab:Toggle{
+	Name = "Fake Money Giver",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		money = Value
+        freemoney()
+	end
+}
+
+MainTab:Toggle{
+	Name = "Auto Respawn",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		Settings.AutoRespawn = Value
+	end
+}
+
+FunTab:Toggle{
+	Name = "Auto Wistle",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		autowistle = Value
+        autowistlefunction()
+	end
+}
+
+
+--buttons
+
+
+
+
+
+MiscTab:Button{
+	Name = "Full Bright",
+	Description = nil,
+	Callback = function()
+		dofullbright()
+	end
+}
+
+MiscTab:Button{
+	Name = "Return Too Main Menu",
+	Description = nil,
+	Callback = function()
+		game:GetService("ReplicatedStorage").Events.ReturnToMenu:FireServer()
+	end
+}
+
+MiscTab:Button{
+	Name = "Low Quality",
+	Description = nil,
+	Callback = function()
+		local ohString1 = "LowQuality"
+        local ohBoolean2 = true
+        game:GetService("ReplicatedStorage").Events.UpdateSetting:FireServer(ohString1, ohBoolean2)
+	end
+}
+
+FunTab:Button{
+	Name = "Free Cam (Shift + P)",
+	Description = nil,
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Robobo2022/script/main/Freecam.lua"))()
+	end
+}
+
+TeleportTab:Button{
+	Name = "Main Game",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 9872472334
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+	end
+}
+
+TeleportTab:Button{
+	Name = "Casual",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 10662542523
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+      end
+}
+
+TeleportTab:Button{
+	Name = "Social Space",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 10324347967
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+	end
+}
+
+TeleportTab:Button{
+	Name = "Big Team",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 10324346056
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+	end
+}
+
+TeleportTab:Button{
+	Name = "Team DeathMatch",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 110539706691
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+	end
+}
+
+TeleportTab:Button{
+	Name = "Vc Only",
+	Description = nil,
+	Callback = function()
+		local TeleportService = game:GetService('TeleportService')
+        GameId = 10808838353
+        TeleportService:Teleport(GameId, game.Players.LocalPlayer)
+	end
+}
+
+
+MiscTab:Button{
+	Name = "Test Emote",
+	Description = nil,
+	Callback = function()
+		game:GetService("ReplicatedStorage").Events.UI.Purchase:InvokeServer("Emotes", "Test")
+	end
+}
+
+
+--keybinds
+
+
+WorldTab:Toggle{
+	Name = "Bots Tracers",
+	StartingState = false,
+	Description = nil,
+	Callback = function(Value)
+		getgenv().toggleespmpt = Value
+	end
+}
+
+WorldTab:ColorPicker{
+	Style = Mercury.ColorPickerStyles.Legacy,
+	Callback = function(Value)
+		getgenv().mptespcolour = Value
+	end
+}
+
+
+local cam = workspace.CurrentCamera
+local rs = game:GetService'RunService'
+
+getgenv().toggleespmpt = true
+function esp(plr)
+   if game:GetService'Players':GetPlayerFromCharacter(plr) == nil then
+    local rat = Drawing.new("Line")
+        rs.RenderStepped:Connect(function()
+            if plr:FindFirstChild'HumanoidRootPart' then
+                local vector,screen = cam:WorldToViewportPoint(plr.HumanoidRootPart.Position)
+                if screen then
+                    rat.Visible = toggleespmpt
+                    rat.From = Vector2.new(cam.ViewportSize.X / 2,cam.ViewportSize.Y / 1)
+                    rat.To = Vector2.new(vector.X,vector.Y)
+                    rat.Color = getgenv().mptespcolour
+                    rat.Thickness = getgenv().mptespthickness
+                    else
+                        rat.Visible = false
+                end
+                else
+                    pcall(function()
+                    rat.Visible = false
+                    end)
+            end
+                if not plr:FindFirstChild'HumanoidRootPart' or not plr:FindFirstChild'HumanoidRootPart':IsDescendantOf(game:GetService'Workspace') then
+                    pcall(function()
+                    rat:Remove()
+                    end)
+            end
+        end)
+   end
+end
+
+for i,v in pairs(game:GetService'Workspace'.Game.Players:GetChildren()) do
+    esp(v)
+end
+
+game:GetService'Workspace'.Game.Players.ChildAdded:Connect(function(plr)
+    esp(plr)
+end)
+
+local old
+old = hookmetamethod(game,"__namecall",newcclosure(function(self,...)
+    local Args = {...}
+    local method = getnamecallmethod()
+    if tostring(self) == 'Communicator' and method == "InvokeServer" and Args[1] == "update" then
+        return Settings.Speed, Settings.Jump 
+    end
+    return old(self,...)
+end))
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    pcall(function()
+        if game.Players.LocalPlayer.Character.Humanoid.MoveDirection.Magnitude > 0 then
+            game.Players.LocalPlayer.Character:TranslateBy(game.Players.LocalPlayer.Character.Humanoid.MoveDirection * TargetWalkspeed/100)
+        end
+    end)
+end)
+
+
+
